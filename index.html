@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yuxi-Know</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f6fa; color: #1a1a2e; height: 100vh; display: flex; overflow: hidden; }
+
+    /* ===== 图标侧边栏 ===== */
+    .icon-sidebar {
+      width: 56px; background: #1a1a2e; display: flex; flex-direction: column;
+      align-items: center; padding: 12px 0; gap: 4px; flex-shrink: 0;
+    }
+    .icon-sidebar .logo {
+      width: 34px; height: 34px; border-radius: 8px; background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 16px; cursor: pointer;
+    }
+    .icon-sidebar .logo svg { width: 20px; height: 20px; fill: white; }
+    .icon-sidebar .nav-group { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 100%; }
+    .icon-sidebar .nav-item {
+      width: 44px; height: 44px; border-radius: 10px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; cursor: pointer; gap: 3px;
+      color: #6b7280; transition: all 0.15s; position: relative;
+    }
+    .icon-sidebar .nav-item:hover { background: rgba(255,255,255,0.08); color: #e5e7eb; }
+    .icon-sidebar .nav-item.active { background: rgba(99,102,241,0.2); color: #818cf8; }
+    .icon-sidebar .nav-item svg { width: 20px; height: 20px; }
+    .icon-sidebar .nav-item span { font-size: 10px; line-height: 1; }
+    .icon-sidebar .spacer { flex: 1; }
+    .icon-sidebar .avatar {
+      width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      color: white; font-size: 13px; font-weight: 600; position: relative; margin-top: 8px;
+    }
+    .icon-sidebar .avatar:hover::after {
+      content: ''; position: absolute; inset: -2px; border-radius: 50%;
+      border: 2px solid #6366f1;
+    }
+
+    /* ===== 对话列表面板 ===== */
+    .conv-panel {
+      width: 230px; background: #fff; border-right: 1px solid #e8eaed; display: flex;
+      flex-direction: column; flex-shrink: 0; overflow: hidden;
+    }
+    .conv-panel .panel-header {
+      padding: 16px 14px 12px; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #f0f1f5;
+    }
+    .conv-panel .panel-title { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+    .conv-panel .new-btn {
+      display: flex; align-items: center; gap: 5px; padding: 6px 10px; border-radius: 7px;
+      background: #6366f1; color: white; font-size: 12px; font-weight: 500; cursor: pointer;
+      border: none; transition: background 0.15s;
+    }
+    .conv-panel .new-btn:hover { background: #4f46e5; }
+    .conv-panel .new-btn svg { width: 13px; height: 13px; fill: white; }
+    .conv-search {
+      padding: 10px 14px; border-bottom: 1px solid #f0f1f5;
+    }
+    .conv-search input {
+      width: 100%; padding: 6px 10px; border: 1px solid #e8eaed; border-radius: 7px;
+      font-size: 12px; color: #374151; background: #f8f9fc; outline: none;
+    }
+    .conv-search input:focus { border-color: #6366f1; background: white; }
+    .conv-list { flex: 1; overflow-y: auto; padding: 8px 8px; }
+    .conv-list::-webkit-scrollbar { width: 4px; }
+    .conv-list::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
+    .conv-date-label {
+      font-size: 11px; color: #9ca3af; padding: 6px 6px 4px; font-weight: 500;
+    }
+    .conv-item {
+      padding: 8px 10px; border-radius: 8px; cursor: pointer; margin-bottom: 1px;
+      transition: background 0.12s; display: flex; align-items: flex-start; gap: 8px;
+    }
+    .conv-item:hover { background: #f3f4f8; }
+    .conv-item.active { background: #ede9fe; }
+    .conv-item svg { width: 14px; height: 14px; color: #9ca3af; flex-shrink: 0; margin-top: 1px; }
+    .conv-item.active svg { color: #6366f1; }
+    .conv-item-text { min-width: 0; }
+    .conv-item-title { font-size: 13px; color: #374151; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
+    .conv-item.active .conv-item-title { color: #4f46e5; font-weight: 500; }
+    .conv-item-time { font-size: 11px; color: #9ca3af; margin-top: 2px; }
+
+    /* ===== 主聊天区域 ===== */
+    .chat-main {
+      flex: 1; display: flex; flex-direction: column; min-width: 0; background: #f5f6fa;
+    }
+    .chat-topbar {
+      height: 52px; background: white; border-bottom: 1px solid #e8eaed;
+      display: flex; align-items: center; padding: 0 20px; gap: 12px; flex-shrink: 0;
+    }
+    .topbar-logo { font-size: 16px; font-weight: 700; color: #1a1a2e; letter-spacing: -0.3px; }
+    .topbar-logo span { color: #6366f1; }
+    .topbar-divider { width: 1px; height: 20px; background: #e8eaed; }
+    .agent-selector {
+      display: flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 8px;
+      border: 1px solid #e8eaed; background: white; cursor: pointer; transition: border-color 0.15s;
+    }
+    .agent-selector:hover { border-color: #6366f1; }
+    .agent-selector .agent-icon {
+      width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .agent-selector .agent-icon svg { width: 13px; height: 13px; fill: white; }
+    .agent-selector .agent-name { font-size: 13px; color: #374151; font-weight: 500; }
+    .agent-selector svg.caret { width: 14px; height: 14px; color: #9ca3af; }
+    .topbar-spacer { flex: 1; }
+    .init-btn {
+      display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 7px;
+      border: 1px solid #e8eaed; background: white; color: #374151; font-size: 13px;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .init-btn:hover { border-color: #6366f1; color: #6366f1; background: #fafbff; }
+    .init-btn svg { width: 14px; height: 14px; }
+
+    /* ===== 消息区 ===== */
+    .messages-area { flex: 1; overflow-y: auto; padding: 20px 0; }
+    .messages-area::-webkit-scrollbar { width: 5px; }
+    .messages-area::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
+    .msg-wrapper { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+    .msg-block { display: flex; gap: 12px; margin-bottom: 24px; }
+    .msg-block.user { flex-direction: row-reverse; }
+    .msg-avatar {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+      display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600;
+    }
+    .msg-avatar.ai { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; }
+    .msg-avatar.user { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+    .msg-content { flex: 1; min-width: 0; }
+    .msg-name { font-size: 12px; color: #9ca3af; margin-bottom: 5px; }
+    .msg-bubble {
+      background: white; border-radius: 12px; padding: 14px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06); font-size: 14px; line-height: 1.7; color: #374151;
+    }
+    .msg-block.user .msg-bubble { background: #6366f1; color: white; max-width: 520px; }
+    .msg-bubble h3 { font-size: 14px; font-weight: 600; margin: 14px 0 6px; color: #1a1a2e; }
+    .msg-bubble h3:first-child { margin-top: 0; }
+    .msg-bubble p { margin-bottom: 10px; }
+    .msg-bubble p:last-child { margin-bottom: 0; }
+    .msg-bubble ul { padding-left: 18px; margin-bottom: 10px; }
+    .msg-bubble li { margin-bottom: 4px; }
+    .msg-bubble strong { font-weight: 600; color: #1a1a2e; }
+    .msg-bubble code {
+      background: #f3f4f6; border-radius: 4px; padding: 1px 5px;
+      font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: #6366f1;
+    }
+    .msg-bubble pre {
+      background: #1e293b; border-radius: 8px; padding: 12px 14px; margin: 10px 0;
+      overflow-x: auto;
+    }
+    .msg-bubble pre code { background: transparent; color: #e2e8f0; font-size: 12px; padding: 0; }
+    .msg-actions {
+      display: flex; gap: 6px; margin-top: 8px; opacity: 0; transition: opacity 0.15s;
+    }
+    .msg-block:hover .msg-actions { opacity: 1; }
+    .msg-action-btn {
+      display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 5px;
+      border: 1px solid #e8eaed; background: white; color: #6b7280; font-size: 11px;
+      cursor: pointer; transition: all 0.12s;
+    }
+    .msg-action-btn:hover { border-color: #6366f1; color: #6366f1; }
+    .msg-action-btn svg { width: 12px; height: 12px; }
+    .thinking-tag {
+      display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px;
+      background: #f0f0fe; color: #6366f1; font-size: 12px; margin-bottom: 10px;
+    }
+    .thinking-tag svg { width: 12px; height: 12px; animation: spin 1.2s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== 输入栏 ===== */
+    .input-area {
+      padding: 12px 20px 16px; background: white; border-top: 1px solid #e8eaed; flex-shrink: 0;
+    }
+    .input-box {
+      max-width: 780px; margin: 0 auto;
+      border: 1.5px solid #e8eaed; border-radius: 12px; background: white;
+      transition: border-color 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .input-box:focus-within { border-color: #6366f1; }
+    .input-textarea {
+      width: 100%; padding: 12px 14px 6px; border: none; outline: none; resize: none;
+      font-size: 14px; color: #374151; background: transparent; min-height: 44px; max-height: 160px;
+      font-family: inherit; line-height: 1.6;
+    }
+    .input-toolbar {
+      display: flex; align-items: center; padding: 6px 10px; gap: 4px; border-top: 1px solid #f0f1f5;
+    }
+    .input-action {
+      display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 7px;
+      border: 1px solid #e8eaed; background: #f8f9fc; color: #6b7280; font-size: 12px;
+      cursor: pointer; transition: all 0.12s; white-space: nowrap;
+    }
+    .input-action:hover { border-color: #6366f1; color: #6366f1; background: #fafbff; }
+    .input-action svg { width: 13px; height: 13px; }
+    .input-toolbar-spacer { flex: 1; }
+    .send-btn {
+      width: 34px; height: 34px; border-radius: 8px; background: #6366f1; color: white;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      border: none; transition: background 0.15s;
+    }
+    .send-btn:hover { background: #4f46e5; }
+    .send-btn svg { width: 16px; height: 16px; fill: white; }
+    .input-hint { text-align: center; font-size: 11px; color: #c4c7d0; margin-top: 8px; max-width: 780px; margin-left: auto; margin-right: auto; }
+
+    /* ===== 选择智能体弹窗 ===== */
+    .modal-mask {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 100;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .modal-mask.show { opacity: 1; pointer-events: all; }
+    .modal-box {
+      background: white; border-radius: 16px; width: 560px; max-height: 80vh;
+      overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      transform: translateY(16px) scale(0.97); transition: transform 0.2s;
+    }
+    .modal-mask.show .modal-box { transform: translateY(0) scale(1); }
+    .modal-header {
+      padding: 18px 20px 14px; border-bottom: 1px solid #f0f1f5;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .modal-title { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+    .modal-close {
+      width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; color: #9ca3af; transition: all 0.12s;
+    }
+    .modal-close:hover { background: #f3f4f6; color: #374151; }
+    .modal-close svg { width: 16px; height: 16px; }
+    .modal-body { padding: 16px 20px; overflow-y: auto; }
+    .modal-body::-webkit-scrollbar { width: 4px; }
+    .modal-body::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
+    .modal-search {
+      margin-bottom: 14px;
+    }
+    .modal-search input {
+      width: 100%; padding: 8px 12px; border: 1px solid #e8eaed; border-radius: 8px;
+      font-size: 13px; color: #374151; outline: none; background: #f8f9fc;
+    }
+    .modal-search input:focus { border-color: #6366f1; background: white; }
+    .modal-section-title { font-size: 12px; color: #9ca3af; font-weight: 500; margin-bottom: 10px; }
+    .agent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .agent-card {
+      padding: 14px; border-radius: 10px; border: 1.5px solid #e8eaed; cursor: pointer;
+      transition: all 0.15s; display: flex; gap: 10px; align-items: flex-start;
+    }
+    .agent-card:hover { border-color: #6366f1; background: #fafbff; }
+    .agent-card.selected { border-color: #6366f1; background: #ede9fe; }
+    .agent-card-icon {
+      width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .agent-card-body { min-width: 0; }
+    .agent-card-name { font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 3px; }
+    .agent-card-desc { font-size: 11px; color: #9ca3af; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .modal-footer {
+      padding: 12px 20px; border-top: 1px solid #f0f1f5;
+      display: flex; justify-content: flex-end; gap: 10px;
+    }
+    .btn-cancel {
+      padding: 7px 18px; border-radius: 8px; border: 1px solid #e8eaed; background: white;
+      color: #374151; font-size: 13px; cursor: pointer; transition: all 0.12s;
+    }
+    .btn-cancel:hover { border-color: #6366f1; color: #6366f1; }
+    .btn-confirm {
+      padding: 7px 18px; border-radius: 8px; border: none; background: #6366f1;
+      color: white; font-size: 13px; cursor: pointer; transition: background 0.12s; font-weight: 500;
+    }
+    .btn-confirm:hover { background: #4f46e5; }
+
+    /* ===== 用户菜单 ===== */
+    .user-menu {
+      position: fixed; left: 56px; bottom: 12px; width: 180px; background: white;
+      border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,0.14); z-index: 200;
+      padding: 6px; opacity: 0; pointer-events: none; transition: all 0.15s;
+      transform: translateX(-4px);
+    }
+    .user-menu.show { opacity: 1; pointer-events: all; transform: translateX(0); }
+    .user-menu-header {
+      padding: 10px 10px 8px; border-bottom: 1px solid #f0f1f5; margin-bottom: 4px;
+    }
+    .user-menu-name { font-size: 13px; font-weight: 600; color: #1a1a2e; }
+    .user-menu-role { font-size: 11px; color: #9ca3af; margin-top: 1px; }
+    .user-menu-item {
+      display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 7px;
+      cursor: pointer; color: #374151; font-size: 13px; transition: background 0.1s;
+    }
+    .user-menu-item:hover { background: #f3f4f8; }
+    .user-menu-item.danger { color: #ef4444; }
+    .user-menu-item.danger:hover { background: #fef2f2; }
+    .user-menu-item svg { width: 15px; height: 15px; color: #9ca3af; flex-shrink: 0; }
+    .user-menu-item.danger svg { color: #ef4444; }
+    .user-menu-divider { height: 1px; background: #f0f1f5; margin: 4px 0; }
+
+    /* 空状态 */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100%; gap: 12px; color: #9ca3af; padding-bottom: 60px;
+    }
+    .empty-state svg { width: 48px; height: 48px; opacity: 0.3; }
+    .empty-state p { font-size: 14px; }
+    .quick-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+    .quick-chip {
+      padding: 7px 14px; border-radius: 20px; border: 1px solid #e8eaed; background: white;
+      color: #6b7280; font-size: 12px; cursor: pointer; transition: all 0.12s;
+    }
+    .quick-chip:hover { border-color: #6366f1; color: #6366f1; background: #fafbff; }
+  </style>
+</head>
+<body>
+
+<!-- 图标侧边栏 -->
+<div class="icon-sidebar">
+  <div class="logo" title="Yuxi-Know">
+    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+  </div>
+  <div class="nav-group">
+    <div class="nav-item active" title="智能体" onclick="setNav(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M12 2a5 5 0 0 1 5 5c0 2.4-1.6 4.4-3.8 5.1V14H15a2 2 0 0 1 2 2v4H7v-4a2 2 0 0 1 2-2h1.8v-1.9A5.1 5.1 0 0 1 7 7a5 5 0 0 1 5-5z"/>
+        <circle cx="9" cy="7" r="1" fill="currentColor" stroke="none"/>
+        <circle cx="15" cy="7" r="1" fill="currentColor" stroke="none"/>
+      </svg>
+      <span>智能体</span>
+    </div>
+    <div class="nav-item" title="图谱" onclick="setNav(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2.2"/><circle cx="19" cy="6" r="2.2"/>
+        <circle cx="5" cy="18" r="2.2"/><circle cx="19" cy="18" r="2.2"/>
+        <line x1="7" y1="7" x2="10" y2="10.5"/><line x1="17" y1="7" x2="14" y2="10.5"/>
+        <line x1="7" y1="17" x2="10" y2="13.5"/><line x1="17" y1="17" x2="14" y2="13.5"/>
+      </svg>
+      <span>图谱</span>
+    </div>
+    <div class="nav-item" title="知识库" onclick="setNav(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/>
+      </svg>
+      <span>知识库</span>
+    </div>
+    <div class="nav-item" title="Dashboard" onclick="setNav(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/>
+        <rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>
+      </svg>
+      <span>Dashboard</span>
+    </div>
+    <div class="nav-item" title="任务中心" onclick="setNav(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+        <rect x="9" y="3" width="6" height="4" rx="1.5"/>
+        <path d="M9 12l2 2 4-4"/>
+      </svg>
+      <span>任务中心</span>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="avatar" onclick="toggleUserMenu()" title="admin">A</div>
+</div>
+
+<!-- 用户菜单 -->
+<div class="user-menu" id="userMenu">
+  <div class="user-menu-header">
+    <div class="user-menu-name">admin</div>
+    <div class="user-menu-role">管理员</div>
+  </div>
+  <div class="user-menu-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+    </svg>
+    文档中心
+  </div>
+  <div class="user-menu-item" onclick="toggleDarkMode()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+    切换到深色模式
+  </div>
+  <div class="user-menu-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    调试面板
+  </div>
+  <div class="user-menu-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+    系统设置
+  </div>
+  <div class="user-menu-divider"></div>
+  <div class="user-menu-item danger">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+      <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+    退出登录
+  </div>
+</div>
+
+<!-- 对话列表面板 -->
+<div class="conv-panel">
+  <div class="panel-header">
+    <span class="panel-title">对话</span>
+    <button class="new-btn" onclick="newConv()">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+      创建新对话
+    </button>
+  </div>
+  <div class="conv-search">
+    <input type="text" placeholder="搜索对话..." />
+  </div>
+  <div class="conv-list" id="convList">
+    <div class="conv-date-label">今天</div>
+    <div class="conv-item active" onclick="selectConv(this, 0)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <div class="conv-item-text">
+        <div class="conv-item-title">体重管理数据分析报告</div>
+        <div class="conv-item-time">14:32</div>
+      </div>
+    </div>
+    <div class="conv-item" onclick="selectConv(this, 1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <div class="conv-item-text">
+        <div class="conv-item-title">用户BMI异常预警分析</div>
+        <div class="conv-item-time">10:05</div>
+      </div>
+    </div>
+    <div class="conv-date-label">昨天</div>
+    <div class="conv-item" onclick="selectConv(this, 2)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <div class="conv-item-text">
+        <div class="conv-item-title">本月减重趋势与建议</div>
+        <div class="conv-item-time">昨天 16:48</div>
+      </div>
+    </div>
+    <div class="conv-item" onclick="selectConv(this, 3)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <div class="conv-item-text">
+        <div class="conv-item-title">高风险用户名单导出</div>
+        <div class="conv-item-time">昨天 09:12</div>
+      </div>
+    </div>
+    <div class="conv-date-label">更早</div>
+    <div class="conv-item" onclick="selectConv(this, 4)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <div class="conv-item-text">
+        <div class="conv-item-title">饮食记录异常检测分析</div>
+        <div class="conv-item-time">4月18日</div>
+      </div>
+    </div>
+    <div class="conv-item" onclick="selectConv(this, 5)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <div class="conv-item-text">
+        <div class="conv-item-title">新用户注册分布图表</div>
+        <div class="conv-item-time">4月17日</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 主聊天区 -->
+<div class="chat-main">
+  <div class="chat-topbar">
+    <div class="topbar-logo">Yuxi<span>-Know</span></div>
+    <div class="topbar-divider"></div>
+    <div class="agent-selector" onclick="openModal()">
+      <div class="agent-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 1 5 5c0 2.4-1.6 4.4-3.8 5.1V14H15a2 2 0 0 1 2 2v4H7v-4a2 2 0 0 1 2-2h1.8v-1.9A5.1 5.1 0 0 1 7 7a5 5 0 0 1 5-5z"/></svg>
+      </div>
+      <span class="agent-name" id="currentAgentName">智能聊天助手</span>
+      <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+    <div class="topbar-spacer"></div>
+    <button class="init-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+      </svg>
+      初始配置
+    </button>
+  </div>
+
+  <!-- 消息区 -->
+  <div class="messages-area" id="messagesArea">
+    <div class="msg-wrapper" id="msgWrapper">
+      <!-- 初始消息 -->
+      <div class="msg-block">
+        <div class="msg-avatar ai">AI</div>
+        <div class="msg-content">
+          <div class="msg-name">智能聊天助手</div>
+          <div class="msg-bubble">
+            <p>你好！我是体重管理智能分析助手。我可以帮你：</p>
+            <ul>
+              <li>分析用户体重变化趋势与规律</li>
+              <li>识别高风险用户并生成预警报告</li>
+              <li>生成数据可视化图表与统计报告</li>
+              <li>回答关于体重管理业务的各类问题</li>
+            </ul>
+            <p>请告诉我你想了解什么？</p>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              复制
+            </button>
+            <button class="msg-action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.08-8.53"/></svg>
+              重新生成
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="msg-block user">
+        <div class="msg-avatar user">我</div>
+        <div class="msg-content">
+          <div class="msg-name" style="text-align:right">admin</div>
+          <div class="msg-bubble">帮我分析一下本月用户体重管理数据，重点关注BMI超标用户的分布情况</div>
+        </div>
+      </div>
+      <div class="msg-block">
+        <div class="msg-avatar ai">AI</div>
+        <div class="msg-content">
+          <div class="msg-name">智能聊天助手</div>
+          <div class="msg-bubble">
+            <div class="thinking-tag">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+              正在分析数据中...
+            </div>
+            <h3>📊 本月体重管理数据分析报告（2026年4月）</h3>
+            <p>已对系统中 <strong>2,847</strong> 名活跃用户的体重记录进行分析，以下是关键发现：</p>
+            <h3>BMI 分布概览</h3>
+            <ul>
+              <li>正常范围（18.5–24）：<strong>1,203 人</strong>（42.3%）</li>
+              <li>超重（24–28）：<strong>856 人</strong>（30.1%）</li>
+              <li>肥胖（≥28）：<strong>512 人</strong>（18.0%）</li>
+              <li>偏轻（&lt;18.5）：<strong>276 人</strong>（9.7%）</li>
+            </ul>
+            <h3>高风险用户特征</h3>
+            <p>BMI ≥28 的 512 名用户中，有以下明显特征：</p>
+            <ul>
+              <li>年龄集中于 <strong>35–50 岁</strong>，占该群体 67%</li>
+              <li>近 30 天体重持续上升用户 <strong>189 人</strong>，需重点关注</li>
+              <li>打卡频率低于 3 次/周的用户占比 <strong>72%</strong></li>
+            </ul>
+            <h3>建议措施</h3>
+            <ul>
+              <li>对 BMI≥28 且连续上升的 189 人推送个性化干预通知</li>
+              <li>增加打卡提醒频次，提升高风险用户的记录依从性</li>
+              <li>建议导出高风险名单，由专业营养师团队进行跟进</li>
+            </ul>
+          </div>
+          <div class="msg-actions">
+            <button class="msg-action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              复制
+            </button>
+            <button class="msg-action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.08-8.53"/></svg>
+              重新生成
+            </button>
+            <button class="msg-action-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              导出
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 输入栏 -->
+  <div class="input-area">
+    <div class="input-box">
+      <textarea class="input-textarea" id="inputArea" placeholder="输入消息，向 AI 提问..." rows="1"
+        onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <div class="input-toolbar">
+        <button class="input-action" title="上传文件">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          上传
+        </button>
+        <button class="input-action">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          深入分析
+        </button>
+        <button class="input-action">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          生成图表
+        </button>
+        <button class="input-action">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+          生成PPT
+        </button>
+        <div class="input-toolbar-spacer"></div>
+        <button class="send-btn" onclick="sendMessage()">
+          <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="input-hint">内容由 AI 生成，仅供参考。请注意数据安全，不要输入敏感信息。</div>
+  </div>
+</div>
+
+<!-- 选择智能体弹窗 -->
+<div class="modal-mask" id="agentModal" onclick="closeModalMask(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">选择智能体</span>
+      <div class="modal-close" onclick="closeModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-search">
+        <input type="text" placeholder="搜索智能体..." />
+      </div>
+      <div class="modal-section-title">全部智能体（8）</div>
+      <div class="agent-grid" id="agentGrid">
+        <!-- 由JS渲染 -->
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn-confirm" onclick="confirmAgent()">确认选择</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const agents = [
+  { name: '智能聊天助手', desc: '通用智能对话，支持多轮问答和文档分析', emoji: '🤖', color: '#ede9fe', selected: true },
+  { name: '深度分析智能体', desc: '对数据进行深度挖掘和趋势预测分析', emoji: '🔬', color: '#fef3c7', selected: false },
+  { name: '食物识别助手', desc: '识别食物图片，分析营养成分与卡路里', emoji: '🥗', color: '#d1fae5', selected: false },
+  { name: '意图识别助手', desc: '精准理解用户意图，提升交互效率', emoji: '🎯', color: '#fce7f3', selected: false },
+  { name: '医疗智能体', desc: '结合医学知识库提供健康建议与风险提示', emoji: '🏥', color: '#dbeafe', selected: false },
+  { name: '智能体Demo', desc: '演示多种AI能力的综合演示智能体', emoji: '⚡', color: '#f3f4f6', selected: false },
+  { name: '数据库报表助手', desc: '自动生成业务数据报表，支持SQL查询', emoji: '📊', color: '#e0f2fe', selected: false },
+  { name: '体重管理助手', desc: '专注体重管理场景，提供个性化健康建议', emoji: '⚖️', color: '#ecfdf5', selected: false },
+];
+
+let selectedAgent = 0;
+
+function renderAgentGrid() {
+  const grid = document.getElementById('agentGrid');
+  grid.innerHTML = agents.map((a, i) => `
+    <div class="agent-card ${a.selected ? 'selected' : ''}" onclick="selectAgent(${i})">
+      <div class="agent-card-icon" style="background:${a.color}">${a.emoji}</div>
+      <div class="agent-card-body">
+        <div class="agent-card-name">${a.name}</div>
+        <div class="agent-card-desc">${a.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectAgent(i) {
+  selectedAgent = i;
+  agents.forEach((a, idx) => a.selected = idx === i);
+  renderAgentGrid();
+}
+
+function openModal() {
+  renderAgentGrid();
+  document.getElementById('agentModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('agentModal').classList.remove('show');
+}
+
+function closeModalMask(e) {
+  if (e.target === document.getElementById('agentModal')) closeModal();
+}
+
+function confirmAgent() {
+  document.getElementById('currentAgentName').textContent = agents[selectedAgent].name;
+  closeModal();
+}
+
+function setNav(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function toggleUserMenu() {
+  document.getElementById('userMenu').classList.toggle('show');
+}
+
+document.addEventListener('click', e => {
+  const menu = document.getElementById('userMenu');
+  if (menu.classList.contains('show') && !e.target.closest('.avatar') && !e.target.closest('.user-menu')) {
+    menu.classList.remove('show');
+  }
+});
+
+function selectConv(el, idx) {
+  document.querySelectorAll('.conv-item').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function newConv() {
+  document.querySelectorAll('.conv-item').forEach(c => c.classList.remove('active'));
+  const wrapper = document.getElementById('msgWrapper');
+  wrapper.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;gap:10px;color:#9ca3af;padding-top:60px">
+      <div style="font-size:32px">💬</div>
+      <p style="font-size:14px">开始一段新对话</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px">
+        <span class="quick-chip" onclick="quickSend(this.textContent)">分析本月用户数据</span>
+        <span class="quick-chip" onclick="quickSend(this.textContent)">生成体重趋势图</span>
+        <span class="quick-chip" onclick="quickSend(this.textContent)">高风险用户预警</span>
+        <span class="quick-chip" onclick="quickSend(this.textContent)">导出数据报表</span>
+      </div>
+    </div>
+  `;
+  document.getElementById('inputArea').focus();
+}
+
+function quickSend(text) {
+  document.getElementById('inputArea').value = text;
+  sendMessage();
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function sendMessage() {
+  const input = document.getElementById('inputArea');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const wrapper = document.getElementById('msgWrapper');
+  const msgArea = document.getElementById('messagesArea');
+
+  // 清理空状态
+  wrapper.querySelectorAll('[style*="height:300px"]').forEach(e => e.remove());
+
+  // 用户消息
+  const userMsg = document.createElement('div');
+  userMsg.className = 'msg-block user';
+  userMsg.innerHTML = `
+    <div class="msg-avatar user">我</div>
+    <div class="msg-content">
+      <div class="msg-name" style="text-align:right">admin</div>
+      <div class="msg-bubble">${text.replace(/</g,'&lt;')}</div>
+    </div>
+  `;
+  wrapper.appendChild(userMsg);
+  input.value = '';
+  input.style.height = 'auto';
+
+  // AI 思考中
+  const aiMsg = document.createElement('div');
+  aiMsg.className = 'msg-block';
+  aiMsg.innerHTML = `
+    <div class="msg-avatar ai">AI</div>
+    <div class="msg-content">
+      <div class="msg-name">${agents[selectedAgent].name}</div>
+      <div class="msg-bubble">
+        <div class="thinking-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;animation:spin 1.2s linear infinite">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+          </svg>
+          正在分析中...
+        </div>
+      </div>
+    </div>
+  `;
+  wrapper.appendChild(aiMsg);
+  msgArea.scrollTop = msgArea.scrollHeight;
+
+  // 模拟回复
+  setTimeout(() => {
+    aiMsg.querySelector('.msg-bubble').innerHTML = `
+      <p>已收到您的问题。基于当前体重管理系统数据，正在为您生成分析结果...</p>
+      <p>如需深入分析，您可以使用底部工具栏中的「深入分析」功能，或选择「数据库报表助手」来获取更详细的数据报告。</p>
+    `;
+    aiMsg.querySelector('.msg-content').insertAdjacentHTML('beforeend', `
+      <div class="msg-actions">
+        <button class="msg-action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          复制
+        </button>
+        <button class="msg-action-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.08-8.53"/></svg>
+          重新生成
+        </button>
+      </div>
+    `);
+    msgArea.scrollTop = msgArea.scrollHeight;
+  }, 1400);
+}
+
+function toggleDarkMode() {
+  alert('深色模式切换（原型演示）');
+}
+</script>
+</body>
+</html>
