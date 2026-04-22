@@ -294,6 +294,202 @@
     .user-menu-item.danger svg { color: #ef4444; }
     .user-menu-divider { height: 1px; background: #f0f1f5; margin: 4px 0; }
 
+    /* ===== 配置中心 ===== */
+    .config-panel {
+      flex: 1; display: none; flex-direction: column; min-width: 0; background: #f5f6fa; overflow: hidden;
+    }
+    .config-panel.active { display: flex; }
+    .config-topbar {
+      height: 52px; background: white; border-bottom: 1px solid #e8eaed;
+      display: flex; align-items: center; padding: 0 24px; flex-shrink: 0; gap: 16px;
+    }
+    .config-topbar-title { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+    .config-tabs {
+      display: flex; gap: 0; border-bottom: 1px solid #e8eaed; background: white;
+      padding: 0 24px; flex-shrink: 0;
+    }
+    .config-tab {
+      padding: 11px 18px; font-size: 13px; color: #6b7280; cursor: pointer;
+      border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; font-weight: 500;
+    }
+    .config-tab:hover { color: #374151; }
+    .config-tab.active { color: #6366f1; border-bottom-color: #6366f1; }
+    .config-body { flex: 1; overflow-y: auto; padding: 24px; }
+    .config-body::-webkit-scrollbar { width: 5px; }
+    .config-body::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
+    .config-section { display: none; }
+    .config-section.active { display: block; }
+    .config-section-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+    }
+    .config-section-title { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+    .config-section-desc { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+    .btn-primary {
+      display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px;
+      background: #6366f1; color: white; font-size: 13px; font-weight: 500; border: none;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .btn-primary:hover { background: #4f46e5; }
+    .btn-primary svg { width: 14px; height: 14px; stroke: white; fill: none; }
+
+    /* 医院卡片 */
+    .hospital-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+    .hospital-card {
+      background: white; border-radius: 12px; border: 1px solid #e8eaed;
+      overflow: hidden; transition: box-shadow 0.15s;
+    }
+    .hospital-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .hospital-card-img {
+      width: 100%; height: 120px; background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+      display: flex; align-items: center; justify-content: center; color: #6366f1; font-size: 32px;
+      position: relative; overflow: hidden;
+    }
+    .hospital-card-img img { width: 100%; height: 100%; object-fit: cover; }
+    .hospital-card-body { padding: 14px; }
+    .hospital-card-name { font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 5px; }
+    .hospital-card-addr {
+      font-size: 12px; color: #6b7280; display: flex; align-items: flex-start; gap: 4px; margin-bottom: 6px;
+    }
+    .hospital-card-addr svg { width: 12px; height: 12px; flex-shrink: 0; margin-top: 1px; }
+    .hospital-card-url {
+      font-size: 11px; color: #6366f1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      padding: 4px 8px; background: #f0f0fe; border-radius: 5px;
+    }
+    .hospital-card-footer {
+      padding: 10px 14px; border-top: 1px solid #f0f1f5; display: flex; gap: 8px; justify-content: flex-end;
+    }
+    .btn-sm {
+      padding: 5px 10px; border-radius: 6px; font-size: 12px; cursor: pointer;
+      border: 1px solid #e8eaed; background: white; color: #6b7280; transition: all 0.12s;
+    }
+    .btn-sm:hover { border-color: #6366f1; color: #6366f1; }
+    .btn-sm.danger:hover { border-color: #ef4444; color: #ef4444; }
+
+    /* 指标分组 */
+    .indicator-group { background: white; border-radius: 12px; border: 1px solid #e8eaed; margin-bottom: 14px; overflow: hidden; }
+    .indicator-group-header {
+      padding: 14px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer;
+      border-bottom: 1px solid #f0f1f5; user-select: none;
+    }
+    .indicator-group-header:hover { background: #fafbff; }
+    .indicator-group-tag {
+      padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;
+    }
+    .tag-his { background: #dbeafe; color: #1d4ed8; }
+    .tag-dc { background: #d1fae5; color: #065f46; }
+    .tag-patient { background: #fce7f3; color: #9d174d; }
+    .indicator-group-name { font-size: 13px; font-weight: 600; color: #1a1a2e; flex: 1; }
+    .indicator-group-count { font-size: 12px; color: #9ca3af; }
+    .indicator-group-arrow {
+      width: 16px; height: 16px; color: #9ca3af; transition: transform 0.2s;
+    }
+    .indicator-group.open .indicator-group-arrow { transform: rotate(180deg); }
+    .indicator-group-body { display: none; }
+    .indicator-group.open .indicator-group-body { display: block; }
+    .indicator-table { width: 100%; border-collapse: collapse; }
+    .indicator-table th {
+      padding: 9px 14px; font-size: 11px; color: #9ca3af; font-weight: 500;
+      text-align: left; border-bottom: 1px solid #f0f1f5; background: #fafbfc;
+    }
+    .indicator-table td {
+      padding: 11px 14px; font-size: 13px; color: #374151; border-bottom: 1px solid #f8f9fc;
+    }
+    .indicator-table tr:last-child td { border-bottom: none; }
+    .indicator-table tr:hover td { background: #fafbff; }
+    .indicator-name-cell { font-weight: 500; color: #1a1a2e; }
+    .indicator-key { font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: #6366f1; background: #f0f0fe; padding: 2px 6px; border-radius: 4px; }
+    .type-badge { padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+    .type-num { background: #e0f2fe; color: #0369a1; }
+    .type-text { background: #fef9c3; color: #854d0e; }
+    .type-opt { background: #ede9fe; color: #5b21b6; }
+    .indicator-disabled td { opacity: 0.45; }
+    .indicator-disabled .indicator-name-cell::after { content: ' (已停用)'; color: #9ca3af; font-size: 11px; font-weight: 400; }
+    .indicator-add-row td {
+      padding: 10px 14px; border-bottom: none;
+    }
+    .indicator-add-btn {
+      display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px;
+      border-radius: 6px; border: 1px dashed #c7d2fe; color: #6366f1; font-size: 12px;
+      cursor: pointer; background: transparent; transition: all 0.12s;
+    }
+    .indicator-add-btn:hover { background: #f0f0fe; border-style: solid; }
+
+    /* 开关 toggle */
+    .toggle { position: relative; display: inline-block; width: 34px; height: 18px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: #d1d5db; border-radius: 18px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .toggle-slider:before {
+      content: ''; position: absolute; height: 12px; width: 12px; left: 3px; bottom: 3px;
+      background: white; border-radius: 50%; transition: transform 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: #6366f1; }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(16px); }
+
+    /* 抽屉式弹窗（新增医院/指标） */
+    .drawer-mask {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 300;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .drawer-mask.show { opacity: 1; pointer-events: all; }
+    .drawer {
+      position: fixed; right: 0; top: 0; bottom: 0; width: 420px; background: white;
+      box-shadow: -4px 0 24px rgba(0,0,0,0.12); display: flex; flex-direction: column;
+      transform: translateX(100%); transition: transform 0.25s;
+    }
+    .drawer-mask.show .drawer { transform: translateX(0); }
+    .drawer-header {
+      padding: 18px 20px; border-bottom: 1px solid #f0f1f5;
+      display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+    }
+    .drawer-title { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+    .drawer-close {
+      width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; color: #9ca3af;
+    }
+    .drawer-close:hover { background: #f3f4f6; color: #374151; }
+    .drawer-close svg { width: 16px; height: 16px; }
+    .drawer-body { flex: 1; overflow-y: auto; padding: 20px; }
+    .drawer-body::-webkit-scrollbar { width: 4px; }
+    .drawer-body::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 4px; }
+    .drawer-footer {
+      padding: 14px 20px; border-top: 1px solid #f0f1f5; display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0;
+    }
+    .form-group { margin-bottom: 18px; }
+    .form-label { font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 6px; display: block; }
+    .form-label .required { color: #ef4444; margin-left: 2px; }
+    .form-input {
+      width: 100%; padding: 8px 12px; border: 1px solid #e8eaed; border-radius: 8px;
+      font-size: 13px; color: #374151; outline: none; background: white; transition: border-color 0.15s;
+      font-family: inherit;
+    }
+    .form-input:focus { border-color: #6366f1; }
+    .form-select {
+      width: 100%; padding: 8px 12px; border: 1px solid #e8eaed; border-radius: 8px;
+      font-size: 13px; color: #374151; outline: none; background: white; cursor: pointer;
+      appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 10px center;
+    }
+    .form-input-hint { font-size: 11px; color: #9ca3af; margin-top: 4px; }
+    .form-img-preview {
+      width: 100%; height: 100px; border-radius: 8px; border: 1px dashed #e8eaed;
+      display: flex; align-items: center; justify-content: center; color: #9ca3af;
+      font-size: 12px; gap: 6px; margin-top: 6px; background: #fafbfc; cursor: pointer;
+    }
+    .source-type-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .source-type-btn {
+      padding: 7px 14px; border-radius: 8px; border: 1.5px solid #e8eaed; font-size: 13px;
+      cursor: pointer; transition: all 0.12s; color: #6b7280; background: white;
+    }
+    .source-type-btn.selected-his { border-color: #1d4ed8; background: #dbeafe; color: #1d4ed8; }
+    .source-type-btn.selected-dc { border-color: #065f46; background: #d1fae5; color: #065f46; }
+    .source-type-btn.selected-patient { border-color: #9d174d; background: #fce7f3; color: #9d174d; }
+
+    /* 侧边栏底部分割线 */
+    .sidebar-divider { width: 28px; height: 1px; background: rgba(255,255,255,0.1); margin: 6px 0; }
+
     /* 空状态 */
     .empty-state {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -357,6 +553,14 @@
     </div>
   </div>
   <div class="spacer"></div>
+  <div class="sidebar-divider"></div>
+  <div class="nav-item" id="navConfig" title="配置中心" onclick="setNavConfig()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+    <span>配置</span>
+  </div>
   <div class="avatar" onclick="toggleUserMenu()" title="admin">A</div>
 </div>
 
@@ -472,6 +676,133 @@
         <div class="conv-item-title">新用户注册分布图表</div>
         <div class="conv-item-time">4月17日</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- 配置中心面板 -->
+<div class="config-panel" id="configPanel">
+  <div class="config-topbar">
+    <div class="config-topbar-title">配置中心</div>
+  </div>
+  <div class="config-tabs">
+    <div class="config-tab active" onclick="switchConfigTab(this, 'hospital')">预约挂号医院</div>
+    <div class="config-tab" onclick="switchConfigTab(this, 'indicator')">手术预测指标</div>
+  </div>
+  <div class="config-body">
+
+    <!-- 预约挂号医院 -->
+    <div class="config-section active" id="section-hospital">
+      <div class="config-section-header">
+        <div>
+          <div class="config-section-title">医院列表</div>
+          <div class="config-section-desc">配置小程序「预约挂号」页展示的医院，支持跳转到第三方挂号页面</div>
+        </div>
+        <button class="btn-primary" onclick="openHospitalDrawer()">
+          <svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          新增医院
+        </button>
+      </div>
+      <div class="hospital-grid" id="hospitalGrid"></div>
+    </div>
+
+    <!-- 手术预测指标 -->
+    <div class="config-section" id="section-indicator">
+      <div class="config-section-header">
+        <div>
+          <div class="config-section-title">预测指标配置</div>
+          <div class="config-section-desc">配置手术预测模型所使用的评估指标，停用的指标不参与预测计算</div>
+        </div>
+      </div>
+      <div id="indicatorGroups"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 新增/编辑医院 抽屉 -->
+<div class="drawer-mask" id="hospitalDrawer" onclick="closeDrawerMask(event,'hospitalDrawer')">
+  <div class="drawer">
+    <div class="drawer-header">
+      <span class="drawer-title" id="hospitalDrawerTitle">新增医院</span>
+      <div class="drawer-close" onclick="closeDrawer('hospitalDrawer')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+    <div class="drawer-body">
+      <div class="form-group">
+        <label class="form-label">医院名称<span class="required">*</span></label>
+        <input class="form-input" id="hName" placeholder="如：宜兴市人民医院" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">医院地址<span class="required">*</span></label>
+        <input class="form-input" id="hAddr" placeholder="如：江苏省宜兴市人民中路99号" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">封面图片 URL</label>
+        <input class="form-input" id="hImg" placeholder="https://..." oninput="previewHospitalImg()" />
+        <div class="form-img-preview" id="hImgPreview">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          图片预览
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">跳转地址<span class="required">*</span></label>
+        <input class="form-input" id="hUrl" placeholder="https://..." />
+        <div class="form-input-hint">点击医院卡片后跳转的挂号页面地址（小程序 webview 加载）</div>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="btn-cancel" onclick="closeDrawer('hospitalDrawer')">取消</button>
+      <button class="btn-confirm" onclick="saveHospital()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 新增指标 抽屉 -->
+<div class="drawer-mask" id="indicatorDrawer" onclick="closeDrawerMask(event,'indicatorDrawer')">
+  <div class="drawer">
+    <div class="drawer-header">
+      <span class="drawer-title">新增指标</span>
+      <div class="drawer-close" onclick="closeDrawer('indicatorDrawer')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+    <div class="drawer-body">
+      <div class="form-group">
+        <label class="form-label">数据来源<span class="required">*</span></label>
+        <div class="source-type-btns">
+          <button class="source-type-btn selected-his" onclick="selectSource(this,'his')">HIS 系统数据</button>
+          <button class="source-type-btn" onclick="selectSource(this,'dc')">数据中心数据</button>
+          <button class="source-type-btn" onclick="selectSource(this,'patient')">患者额外输入</button>
+        </div>
+        <input type="hidden" id="iSource" value="his" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">指标名称<span class="required">*</span></label>
+        <input class="form-input" id="iName" placeholder="如：血红蛋白" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">字段 Key<span class="required">*</span></label>
+        <input class="form-input" id="iKey" placeholder="如：hemoglobin" style="font-family:monospace" />
+        <div class="form-input-hint">用于与 HIS/数据中心对接的字段标识，建议使用英文小写</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">数据类型<span class="required">*</span></label>
+        <select class="form-select" id="iType">
+          <option value="num">数值（Numeric）</option>
+          <option value="text">文本（Text）</option>
+          <option value="opt">选项（Option）</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">单位</label>
+        <input class="form-input" id="iUnit" placeholder="如：kg、mmHg，无单位可留空" />
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="btn-cancel" onclick="closeDrawer('indicatorDrawer')">取消</button>
+      <button class="btn-confirm" onclick="saveIndicator()">保存</button>
     </div>
   </div>
 </div>
@@ -713,6 +1044,9 @@ function confirmAgent() {
 function setNav(el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
+  document.querySelector('.conv-panel').style.display = '';
+  document.querySelector('.chat-main').style.display = '';
+  document.getElementById('configPanel').classList.remove('active');
 }
 
 function toggleUserMenu() {
@@ -836,6 +1170,242 @@ function sendMessage() {
 function toggleDarkMode() {
   alert('深色模式切换（原型演示）');
 }
+
+/* ===== 配置中心逻辑 ===== */
+
+// 医院数据
+let hospitals = [
+  { id:1, name:'宜兴市人民医院', addr:'江苏省宜兴市人民中路99号', img:'', url:'https://www.yxrmyy.com/register' },
+  { id:2, name:'宜兴市中医医院', addr:'江苏省宜兴市荆邑北路88号', img:'', url:'https://www.yxzyy.com/register' },
+  { id:3, name:'无锡市第二人民医院', addr:'江苏省无锡市中山路68号', img:'', url:'https://wx2.hosp.com/register' },
+];
+let editingHospitalId = null;
+
+function renderHospitals() {
+  const grid = document.getElementById('hospitalGrid');
+  if (!hospitals.length) {
+    grid.innerHTML = '<div style="color:#9ca3af;font-size:13px;padding:24px 0">暂无医院，点击「新增医院」添加</div>';
+    return;
+  }
+  const emojis = ['🏥','🏨','🏦','🏛️'];
+  grid.innerHTML = hospitals.map((h, i) => `
+    <div class="hospital-card">
+      <div class="hospital-card-img">
+        ${h.img ? `<img src="${h.img}" onerror="this.parentElement.innerHTML='${emojis[i%4]}'">` : emojis[i%4]}
+      </div>
+      <div class="hospital-card-body">
+        <div class="hospital-card-name">${h.name}</div>
+        <div class="hospital-card-addr">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          ${h.addr}
+        </div>
+        <div class="hospital-card-url">${h.url}</div>
+      </div>
+      <div class="hospital-card-footer">
+        <button class="btn-sm" onclick="editHospital(${h.id})">编辑</button>
+        <button class="btn-sm danger" onclick="deleteHospital(${h.id})">删除</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openHospitalDrawer(id) {
+  editingHospitalId = id || null;
+  const h = id ? hospitals.find(x => x.id === id) : null;
+  document.getElementById('hospitalDrawerTitle').textContent = id ? '编辑医院' : '新增医院';
+  document.getElementById('hName').value = h ? h.name : '';
+  document.getElementById('hAddr').value = h ? h.addr : '';
+  document.getElementById('hImg').value = h ? h.img : '';
+  document.getElementById('hUrl').value = h ? h.url : '';
+  previewHospitalImg();
+  document.getElementById('hospitalDrawer').classList.add('show');
+}
+
+function editHospital(id) { openHospitalDrawer(id); }
+
+function deleteHospital(id) {
+  if (!confirm('确认删除该医院？')) return;
+  hospitals = hospitals.filter(h => h.id !== id);
+  renderHospitals();
+}
+
+function saveHospital() {
+  const name = document.getElementById('hName').value.trim();
+  const addr = document.getElementById('hAddr').value.trim();
+  const url = document.getElementById('hUrl').value.trim();
+  if (!name || !addr || !url) { alert('请填写必填项（名称、地址、跳转地址）'); return; }
+  const img = document.getElementById('hImg').value.trim();
+  if (editingHospitalId) {
+    const h = hospitals.find(x => x.id === editingHospitalId);
+    Object.assign(h, { name, addr, img, url });
+  } else {
+    hospitals.push({ id: Date.now(), name, addr, img, url });
+  }
+  renderHospitals();
+  closeDrawer('hospitalDrawer');
+}
+
+function previewHospitalImg() {
+  const url = document.getElementById('hImg').value.trim();
+  const preview = document.getElementById('hImgPreview');
+  if (url) {
+    preview.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:8px" onerror="this.parentElement.innerHTML='<span style=color:#9ca3af;font-size:12px>图片加载失败</span>'">`;
+  } else {
+    preview.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> 图片预览`;
+  }
+}
+
+// 指标数据
+let indicators = {
+  his: [
+    { id:1, name:'BMI', key:'bmi', type:'num', unit:'kg/m²', enabled:true },
+    { id:2, name:'体重', key:'weight', type:'num', unit:'kg', enabled:true },
+    { id:3, name:'身高', key:'height', type:'num', unit:'cm', enabled:true },
+    { id:4, name:'收缩压', key:'sbp', type:'num', unit:'mmHg', enabled:true },
+    { id:5, name:'舒张压', key:'dbp', type:'num', unit:'mmHg', enabled:true },
+    { id:6, name:'空腹血糖', key:'fasting_glucose', type:'num', unit:'mmol/L', enabled:true },
+  ],
+  dc: [
+    { id:7, name:'历史就诊次数', key:'visit_count', type:'num', unit:'次', enabled:true },
+    { id:8, name:'手术史', key:'surgery_history', type:'opt', unit:'-', enabled:true },
+    { id:9, name:'用药记录', key:'medication', type:'text', unit:'-', enabled:true },
+  ],
+  patient: [
+    { id:10, name:'主诉症状', key:'chief_complaint', type:'text', unit:'-', enabled:true },
+    { id:11, name:'家族病史', key:'family_history', type:'text', unit:'-', enabled:true },
+    { id:12, name:'吸烟史', key:'smoking', type:'opt', unit:'-', enabled:true },
+  ]
+};
+
+const groupMeta = {
+  his:     { label:'HIS', tagClass:'tag-his', name:'HIS 系统数据',   desc:'由医院信息系统自动获取' },
+  dc:      { label:'数据中心', tagClass:'tag-dc', name:'数据中心数据', desc:'由平台数据中心同步' },
+  patient: { label:'患者输入', tagClass:'tag-patient', name:'患者额外输入', desc:'患者在小程序中手动填写' },
+};
+const typeLabel = { num:'数值', text:'文本', opt:'选项' };
+const typeClass = { num:'type-num', text:'type-text', opt:'type-opt' };
+
+function renderIndicators() {
+  const container = document.getElementById('indicatorGroups');
+  container.innerHTML = Object.keys(indicators).map(source => {
+    const meta = groupMeta[source];
+    const list = indicators[source];
+    const rows = list.map(ind => `
+      <tr class="${!ind.enabled ? 'indicator-disabled' : ''}">
+        <td class="indicator-name-cell">${ind.name}</td>
+        <td><span class="indicator-key">${ind.key}</span></td>
+        <td><span class="type-badge ${typeClass[ind.type]}">${typeLabel[ind.type]}</span></td>
+        <td>${ind.unit === '-' ? '—' : ind.unit}</td>
+        <td>
+          <label class="toggle">
+            <input type="checkbox" ${ind.enabled ? 'checked' : ''} onchange="toggleIndicator('${source}',${ind.id},this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </td>
+      </tr>
+    `).join('');
+    return `
+      <div class="indicator-group open" id="group-${source}">
+        <div class="indicator-group-header" onclick="toggleGroup('${source}')">
+          <span class="indicator-group-tag ${meta.tagClass}">${meta.label}</span>
+          <span class="indicator-group-name">${meta.name}</span>
+          <span class="indicator-group-count">${list.filter(i=>i.enabled).length} / ${list.length} 启用</span>
+          <svg class="indicator-group-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="indicator-group-body">
+          <table class="indicator-table">
+            <thead>
+              <tr>
+                <th>指标名称</th><th>字段 Key</th><th>数据类型</th><th>单位</th><th>启用</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+          <div class="indicator-add-row"><td colspan="5">
+            <button class="indicator-add-btn" onclick="openIndicatorDrawer('${source}')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              新增指标
+            </button>
+          </td></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleGroup(source) {
+  document.getElementById('group-' + source).classList.toggle('open');
+}
+
+function toggleIndicator(source, id, enabled) {
+  const ind = indicators[source].find(i => i.id === id);
+  if (ind) ind.enabled = enabled;
+  renderIndicators();
+}
+
+let addingIndicatorSource = 'his';
+
+function openIndicatorDrawer(source) {
+  addingIndicatorSource = source || 'his';
+  document.getElementById('iName').value = '';
+  document.getElementById('iKey').value = '';
+  document.getElementById('iType').value = 'num';
+  document.getElementById('iUnit').value = '';
+  document.getElementById('iSource').value = addingIndicatorSource;
+  document.querySelectorAll('.source-type-btn').forEach(b => b.className = 'source-type-btn');
+  const map = {his:0, dc:1, patient:2};
+  const btns = document.querySelectorAll('.source-type-btn');
+  const cls = {his:'selected-his', dc:'selected-dc', patient:'selected-patient'};
+  btns[map[addingIndicatorSource]].classList.add(cls[addingIndicatorSource]);
+  document.getElementById('indicatorDrawer').classList.add('show');
+}
+
+function selectSource(btn, source) {
+  addingIndicatorSource = source;
+  document.getElementById('iSource').value = source;
+  document.querySelectorAll('.source-type-btn').forEach(b => b.className = 'source-type-btn');
+  const cls = {his:'selected-his', dc:'selected-dc', patient:'selected-patient'};
+  btn.classList.add(cls[source]);
+}
+
+function saveIndicator() {
+  const name = document.getElementById('iName').value.trim();
+  const key = document.getElementById('iKey').value.trim();
+  const type = document.getElementById('iType').value;
+  const unit = document.getElementById('iUnit').value.trim() || '-';
+  const source = document.getElementById('iSource').value;
+  if (!name || !key) { alert('请填写指标名称和字段 Key'); return; }
+  indicators[source].push({ id: Date.now(), name, key, type, unit, enabled: true });
+  renderIndicators();
+  closeDrawer('indicatorDrawer');
+}
+
+function switchConfigTab(el, section) {
+  document.querySelectorAll('.config-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.config-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + section).classList.add('active');
+}
+
+function setNavConfig() {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('navConfig').classList.add('active');
+  document.querySelector('.conv-panel').style.display = 'none';
+  document.querySelector('.chat-main').style.display = 'none';
+  document.getElementById('configPanel').classList.add('active');
+}
+
+function closeDrawer(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+function closeDrawerMask(e, id) {
+  if (e.target === document.getElementById(id)) closeDrawer(id);
+}
+
+// 初始化渲染
+renderHospitals();
+renderIndicators();
 </script>
 </body>
 </html>
