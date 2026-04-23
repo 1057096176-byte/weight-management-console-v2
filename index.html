@@ -1258,29 +1258,47 @@ function previewHospitalImg() {
 // 指标数据
 let indicators = {
   his: [
-    { id:1, name:'BMI', key:'bmi', type:'num', unit:'kg/m²', enabled:true },
-    { id:2, name:'体重', key:'weight', type:'num', unit:'kg', enabled:true },
-    { id:3, name:'身高', key:'height', type:'num', unit:'cm', enabled:true },
-    { id:4, name:'收缩压', key:'sbp', type:'num', unit:'mmHg', enabled:true },
-    { id:5, name:'舒张压', key:'dbp', type:'num', unit:'mmHg', enabled:true },
-    { id:6, name:'空腹血糖', key:'fasting_glucose', type:'num', unit:'mmol/L', enabled:true },
+    { id:1, name:'主诉', key:'chief_complaint', type:'text', unit:'-', enabled:true },
+    { id:2, name:'现病史', key:'present_illness', type:'text', unit:'-', enabled:true },
+    { id:3, name:'既往史', key:'past_history', type:'text', unit:'-', enabled:true },
+    { id:4, name:'家族史', key:'family_history', type:'text', unit:'-', enabled:true },
+    { id:5, name:'个人史', key:'personal_history', type:'text', unit:'-', enabled:true },
+    { id:6, name:'过敏史', key:'allergy_history', type:'text', unit:'-', enabled:true },
+    { id:7, name:'手术史', key:'surgery_history', type:'text', unit:'-', enabled:true },
+    { id:8, name:'用药记录', key:'medication', type:'text', unit:'-', enabled:true },
+    { id:9, name:'体格检查', key:'physical_exam', type:'text', unit:'-', enabled:true },
+    { id:10, name:'初步诊断', key:'preliminary_diagnosis', type:'text', unit:'-', enabled:true },
+    { id:11, name:'诊断编码(ICD-10)', key:'diagnosis_code', type:'text', unit:'-', enabled:true },
   ],
   dc: [
-    { id:7, name:'历史就诊次数', key:'visit_count', type:'num', unit:'次', enabled:true },
-    { id:8, name:'手术史', key:'surgery_history', type:'opt', unit:'-', enabled:true },
-    { id:9, name:'用药记录', key:'medication', type:'text', unit:'-', enabled:true },
+    { id:12, name:'心率', key:'heart_rate', type:'num', unit:'bpm', enabled:true },
+    { id:13, name:'步数', key:'step_count', type:'num', unit:'步/天', enabled:true },
+    { id:14, name:'血氧饱和度', key:'spo2', type:'num', unit:'%', enabled:true },
+    { id:15, name:'睡眠时长', key:'sleep_duration', type:'num', unit:'小时', enabled:true },
+    { id:16, name:'深睡时长', key:'deep_sleep', type:'num', unit:'小时', enabled:true },
+    { id:17, name:'压力指数', key:'stress_level', type:'num', unit:'分', enabled:true },
+    { id:18, name:'皮肤温度', key:'skin_temp', type:'num', unit:'℃', enabled:true },
+    { id:19, name:'静息心率', key:'resting_hr', type:'num', unit:'bpm', enabled:true },
+    { id:20, name:'活动消耗', key:'active_calories', type:'num', unit:'kcal', enabled:true },
+    { id:21, name:'呼吸频率', key:'respiration_rate', type:'num', unit:'次/分', enabled:true },
   ],
   patient: [
-    { id:10, name:'主诉症状', key:'chief_complaint', type:'text', unit:'-', enabled:true },
-    { id:11, name:'家族病史', key:'family_history', type:'text', unit:'-', enabled:true },
-    { id:12, name:'吸烟史', key:'smoking', type:'opt', unit:'-', enabled:true },
+    { id:22, name:'收缩压', key:'sbp', type:'num', unit:'mmHg', enabled:true },
+    { id:23, name:'舒张压', key:'dbp', type:'num', unit:'mmHg', enabled:true },
+    { id:24, name:'空腹血糖', key:'fasting_glucose', type:'num', unit:'mmol/L', enabled:true },
+    { id:25, name:'餐后血糖', key:'postprandial_glucose', type:'num', unit:'mmol/L', enabled:true },
+    { id:26, name:'体重', key:'weight', type:'num', unit:'kg', enabled:true },
+    { id:27, name:'腰围', key:'waist', type:'num', unit:'cm', enabled:true },
+    { id:28, name:'饮食记录', key:'diet_record', type:'text', unit:'-', enabled:true },
+    { id:29, name:'运动记录', key:'exercise_record', type:'text', unit:'-', enabled:true },
+    { id:30, name:'自觉症状', key:'subjective_symptoms', type:'text', unit:'-', enabled:true },
   ]
 };
 
 const groupMeta = {
-  his:     { label:'HIS', tagClass:'tag-his', name:'HIS 系统数据',   desc:'由医院信息系统自动获取' },
-  dc:      { label:'数据中心', tagClass:'tag-dc', name:'数据中心数据', desc:'由平台数据中心同步' },
-  patient: { label:'患者输入', tagClass:'tag-patient', name:'患者额外输入', desc:'患者在小程序中手动填写' },
+  his:     { label:'HIS', tagClass:'tag-his', name:'HIS 系统数据',   desc:'由医院HIS系统自动获取（主诉、病史、诊断等）' },
+  dc:      { label:'数据中心', tagClass:'tag-dc', name:'数据中心数据', desc:'由华为穿戴设备采集同步（心率、步数、睡眠等）' },
+  patient: { label:'患者输入', tagClass:'tag-patient', name:'患者额外输入', desc:'设备暂无法测量，由患者手动录入（血压、血糖等）' },
 };
 const typeLabel = { num:'数值', text:'文本', opt:'选项' };
 const typeClass = { num:'type-num', text:'type-text', opt:'type-opt' };
